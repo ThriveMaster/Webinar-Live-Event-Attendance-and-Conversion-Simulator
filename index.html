@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webinar & Live Event Attendance & Conversion Simulator</title>
+    <!-- Tailwind CSS for utility-first responsive layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font for executive typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for responsive visual funnel stage analysis -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 min-h-screen p-4 md:p-6 transition-colors duration-300">
+
+    <div class="max-w-6xl mx-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden transition-all">
+        
+        <!-- Top Branded Header -->
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-white relative">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">📡</span>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">Webinar & Live Event Attendance & Conversion Simulator</h1>
+                        <p class="text-indigo-100 text-xs md:text-sm mt-0.5">Model show-up rates, replay conversions, and total revenue per registrant for live masterclasses.</p>
+                    </div>
+                </div>
+                <!-- Theme Mode Toggle -->
+                <button id="theme-toggle" class="self-start sm:self-auto bg-indigo-700/50 hover:bg-indigo-700/80 px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-400/30 transition-all flex items-center gap-1.5">
+                    <span id="theme-icon">☀️</span> <span id="theme-text">Light Mode</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Split Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-zinc-200 dark:divide-zinc-800">
+            
+            <!-- Left Input Column (5 cols) -->
+            <div class="p-6 lg:col-span-5 flex flex-col gap-5 bg-zinc-50/50 dark:bg-zinc-900/40">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Live Event Inputs</span>
+                    <button id="btn-reset" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Reset Values</button>
+                </div>
+
+                <!-- Input 1: Event Type / Industry Preset -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="select-preset" class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                        <span>🎯</span> Event Format Benchmark Preset
+                    </label>
+                    <select id="select-preset" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium cursor-pointer">
+                        <option value="masterclass" selected>Live Paid/Free Masterclass (35% Show-Up | 5.0% Conv)</option>
+                        <option value="evergreen">Evergreen Automated Webinar (15% Show-Up | 2.5% Conv)</option>
+                        <option value="workshop">Interactive B2B Workshop (45% Show-Up | 8.0% Conv)</option>
+                        <option value="high_ticket">High-Ticket Pitch Event ($1k+) (30% Show-Up | 3.0% Conv)</option>
+                        <option value="custom">Custom Parameters</option>
+                    </select>
+                </div>
+
+                <!-- Input 2: Total Registrants -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center text-xs font-semibold">
+                        <label for="slider-registrants" class="text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                            <span>👥</span> Total Registrants
+                        </label>
+                        <span id="val-registrants-display" class="text-indigo-600 dark:text-indigo-400 font-bold">500 Registrants</span>
+                    </div>
+                    <input type="range" id="slider-registrants" min="50" max="5000" step="25" value="500" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                        <span>50</span>
+                        <span>1,000</span>
+                        <span>5,000+</span>
+                    </div>
+                </div>
+
+                <!-- Input 3: Show-Up Rate % -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center text-xs font-semibold">
+                        <label for="slider-showup" class="text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                            <span>🚪</span> Live Show-Up Rate (%)
+                        </label>
+                        <span id="val-showup-display" class="text-indigo-600 dark:text-indigo-400 font-bold">35.0%</span>
+                    </div>
+                    <input type="range" id="slider-showup" min="5.0" max="65.0" step="0.5" value="35.0" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                        <span>10% (Low)</span>
+                        <span>35% (Avg)</span>
+                        <span>60%+ (Elite)</span>
+                    </div>
+                </div>
+
+                <!-- Input 4: Reminder Sequence Modifier -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="select-reminders" class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                        <span>📲</span> Reminder Sequence Multiplier
+                    </label>
+                    <select id="select-reminders" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium cursor-pointer">
+                        <option value="0">Standard (3 Email Reminders: -0% Boost)</option>
+                        <option value="5" selected>High Touch (SMS + 5 Emails: +5% Show-Up Boost)</option>
+                        <option value="-5">Low Touch (1 Email Only: -5% Show-Up Penalty)</option>
+                    </select>
+                </div>
+
+                <!-- Input 5: Pitch Offer Price ($) -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center text-xs font-semibold">
+                        <label for="slider-offer-price" class="text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                            <span>🏷️</span> Pitch Offer Price ($)
+                        </label>
+                        <span id="val-price-display" class="text-emerald-600 dark:text-emerald-400 font-bold">$497 Offer</span>
+                    </div>
+                    <input type="range" id="slider-offer-price" min="47" max="2997" step="25" value="497" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                        <span>$47 (Low Ticket)</span>
+                        <span>$497 (Standard)</span>
+                        <span>$2,997 (High Ticket)</span>
+                    </div>
+                </div>
+
+                <!-- Input 6: Live Conversion Rate % -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center text-xs font-semibold">
+                        <label for="slider-live-conv" class="text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                            <span>💳</span> Live Attendee Conversion Rate (%)
+                        </label>
+                        <span id="val-live-conv-display" class="text-emerald-600 dark:text-emerald-400 font-bold">5.0%</span>
+                    </div>
+                    <input type="range" id="slider-live-conv" min="0.5" max="20.0" step="0.1" value="5.0" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                        <span>1% (Cold)</span>
+                        <span>5% (Benchmark)</span>
+                        <span>15%+ (Hot)</span>
+                    </div>
+                </div>
+
+                <!-- Input 7: Replay Sequence Settings -->
+                <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-inner flex flex-col gap-3">
+                    <span class="text-[11px] font-semibold text-zinc-500 uppercase flex items-center justify-between">
+                        <span>📼 Replay Nurture Sequence</span>
+                    </span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex flex-col gap-1">
+                            <label for="input-replay-view-pct" class="text-[10px] font-semibold text-zinc-500 uppercase">Non-Attendee Views (%)</label>
+                            <input type="number" id="input-replay-view-pct" value="25" min="0" max="100" step="1" class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg py-1 px-2 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label for="input-replay-conv-pct" class="text-[10px] font-semibold text-zinc-500 uppercase">Replay Conversion (%)</label>
+                            <input type="number" id="input-replay-conv-pct" value="1.5" min="0" max="20" step="0.1" class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg py-1 px-2 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Formula Anchor -->
+                <div class="p-3 rounded-xl bg-indigo-500/5 border border-indigo-500/20 text-center">
+                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        <strong class="text-indigo-600 dark:text-indigo-400 font-semibold">Webinar Revenue Formula:</strong><br>
+                        <code class="font-mono text-[10px] bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Total Rev = (Live Attendees × Live Conv %) + (Replay Viewers × Replay Conv %) × Price</code>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Output Column (7 cols) -->
+            <div class="p-6 lg:col-span-7 flex flex-col justify-between gap-6 bg-white dark:bg-zinc-900">
+                <div class="flex flex-col gap-6">
+                    
+                    <!-- KPI Summary Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col gap-0.5">
+                            <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Live Attendees</span>
+                            <span id="stat-live-attendees" class="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">200</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col gap-0.5">
+                            <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Total Sales Units</span>
+                            <span id="stat-total-sales" class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">11 Sales</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col gap-0.5">
+                            <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Gross Event Rev</span>
+                            <span id="stat-total-rev" class="text-lg font-extrabold text-purple-600 dark:text-purple-400">$5,467</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col gap-0.5">
+                            <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Rev / Registrant</span>
+                            <span id="stat-rpr" class="text-lg font-extrabold text-amber-600 dark:text-amber-400">$10.93 / reg</span>
+                        </div>
+                    </div>
+
+                    <!-- Funnel Stage Waterfall Diagnostic Banner -->
+                    <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex flex-col gap-1 text-center sm:text-left">
+                            <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Revenue Breakdown</span>
+                            <span class="text-[11px] text-zinc-400">Live Sales: <strong id="stat-live-rev" class="text-emerald-600 dark:text-emerald-400 font-bold">$4,970</strong> | Replay Sales: <strong id="stat-replay-rev" class="text-indigo-600 dark:text-indigo-400 font-bold">$497</strong></span>
+                        </div>
+                        <div class="flex gap-4 border-t sm:border-t-0 sm:border-l border-zinc-200 dark:border-zinc-700 pt-2 sm:pt-0 sm:pl-4">
+                            <div class="flex flex-col text-center sm:text-left">
+                                <span class="text-[10px] text-zinc-400 uppercase font-semibold">Effective Show-Up %</span>
+                                <span id="stat-effective-showup" class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">40.0%</span>
+                            </div>
+                            <div class="flex flex-col text-center sm:text-left">
+                                <span class="text-[10px] text-zinc-400 uppercase font-semibold">Total Funnel Yield</span>
+                                <span id="stat-blended-yield" class="text-sm font-extrabold text-purple-600 dark:text-purple-400">2.20%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Funnel Breakdown Chart -->
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Event Audience Progression</span>
+                            <span class="text-[10px] text-zinc-400 flex items-center gap-2">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Audience Volume
+                            </span>
+                        </div>
+                        <div class="h-44 w-full relative">
+                            <canvas id="webinar-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Actionable Strategic Guidance Card -->
+                    <div class="flex flex-col gap-2">
+                        <span class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Event Performance Diagnostic</span>
+                        <div id="takeaway-card" class="p-3 rounded-xl border border-indigo-500/30 bg-indigo-500/5 text-xs leading-relaxed flex flex-col gap-1 text-zinc-800 dark:text-zinc-200">
+                            <!-- Dynamically populated via JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Copy Action Controls -->
+                <div class="flex flex-col gap-2.5 pt-4 border-t border-dashed border-zinc-200 dark:border-zinc-800">
+                    <button id="btn-copy" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-bold rounded-xl py-3 px-4 shadow-md transition-all flex items-center justify-center gap-2">
+                        <span>📋</span> Copy Live Event Simulation Report (Markdown)
+                    </button>
+                    <p class="text-[10px] text-zinc-400 text-center leading-normal">Instantly copy formatted webinar conversion math & revenue targets to share with co-hosts, sponsors, or client teams.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-emerald-600 text-white font-semibold px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 z-50 text-sm">
+        <span id="toast-icon">✅</span>
+        <span id="toast-message">Report Copied to Clipboard!</span>
+    </div>
+
+    <!-- JavaScript Logic Engine -->
+    <script>
+        const PRESETS = {
+            masterclass: { showUp: 35.0, liveConv: 5.0 },
+            evergreen: { showUp: 15.0, liveConv: 2.5 },
+            workshop: { showUp: 45.0, liveConv: 8.0 },
+            high_ticket: { showUp: 30.0, liveConv: 3.0 }
+        };
+
+        const selectPreset = document.getElementById("select-preset");
+        const sliderRegistrants = document.getElementById("slider-registrants");
+        const sliderShowup = document.getElementById("slider-showup");
+        const selectReminders = document.getElementById("select-reminders");
+        const sliderOfferPrice = document.getElementById("slider-offer-price");
+        const sliderLiveConv = document.getElementById("slider-live-conv");
+        const inputReplayViewPct = document.getElementById("input-replay-view-pct");
+        const inputReplayConvPct = document.getElementById("input-replay-conv-pct");
+
+        const valRegistrantsDisplay = document.getElementById("val-registrants-display");
+        const valShowupDisplay = document.getElementById("val-showup-display");
+        const valPriceDisplay = document.getElementById("val-price-display");
+        const valLiveConvDisplay = document.getElementById("val-live-conv-display");
+
+        const statLiveAttendees = document.getElementById("stat-live-attendees");
+        const statTotalSales = document.getElementById("stat-total-sales");
+        const statTotalRev = document.getElementById("stat-total-rev");
+        const statRpr = document.getElementById("stat-rpr");
+
+        const statLiveRev = document.getElementById("stat-live-rev");
+        const statReplayRev = document.getElementById("stat-replay-rev");
+        const statEffectiveShowup = document.getElementById("stat-effective-showup");
+        const statBlendedYield = document.getElementById("stat-blended-yield");
+
+        const takeawayCard = document.getElementById("takeaway-card");
+        const btnReset = document.getElementById("btn-reset");
+        const btnCopy = document.getElementById("btn-copy");
+        const themeToggle = document.getElementById("theme-toggle");
+        const themeIcon = document.getElementById("theme-icon");
+        const themeText = document.getElementById("theme-text");
+        const toast = document.getElementById("toast");
+
+        let chartInstance = null;
+
+        themeToggle.addEventListener("click", () => {
+            document.documentElement.classList.toggle("dark");
+            const isDark = document.documentElement.classList.contains("dark");
+            themeIcon.textContent = isDark ? "☀️" : "🌙";
+            themeText.textContent = isDark ? "Light Mode" : "Dark Mode";
+            calculateSimulator();
+        });
+
+        const triggerToast = (msg, icon = "✅") => {
+            document.getElementById("toast-message").textContent = msg;
+            document.getElementById("toast-icon").textContent = icon;
+            toast.classList.remove("translate-y-20", "opacity-0");
+            toast.classList.add("translate-y-0", "opacity-100");
+            setTimeout(() => {
+                toast.classList.remove("translate-y-0", "opacity-100");
+                toast.classList.add("translate-y-20", "opacity-0");
+            }, 3000);
+        };
+
+        const calculateSimulator = () => {
+            const presetKey = selectPreset.value;
+
+            if (presetKey !== "custom" && PRESETS[presetKey]) {
+                sliderShowup.value = PRESETS[presetKey].showUp;
+                sliderLiveConv.value = PRESETS[presetKey].liveConv;
+            }
+
+            const registrants = parseInt(sliderRegistrants.value) || 100;
+            const baseShowup = parseFloat(sliderShowup.value) || 30;
+            const reminderBoost = parseFloat(selectReminders.value) || 0;
+            const offerPrice = parseFloat(sliderOfferPrice.value) || 497;
+            const liveConv = parseFloat(sliderLiveConv.value) || 5.0;
+
+            const replayViewPct = parseFloat(inputReplayViewPct.value) || 0;
+            const replayConvPct = parseFloat(inputReplayConvPct.value) || 0;
+
+            // Effective show-up rate calculation
+            const effectiveShowupPct = Math.min(95, Math.max(1, baseShowup + reminderBoost));
+
+            // Displays
+            valRegistrantsDisplay.textContent = `${registrants.toLocaleString()} Registrants`;
+            valShowupDisplay.textContent = `${baseShowup.toFixed(1)}%`;
+            valPriceDisplay.textContent = `$${offerPrice.toLocaleString()} Offer`;
+            valLiveConvDisplay.textContent = `${liveConv.toFixed(1)}%`;
+
+            // Live Attendance & Sales
+            const liveAttendees = Math.round(registrants * (effectiveShowupPct / 100));
+            const liveSalesUnits = Math.round(liveAttendees * (liveConv / 100));
+            const liveRev = liveSalesUnits * offerPrice;
+
+            // Replay Attendance & Sales
+            const nonAttendees = Math.max(0, registrants - liveAttendees);
+            const replayViewers = Math.round(nonAttendees * (replayViewPct / 100));
+            const replaySalesUnits = Math.round(replayViewers * (replayConvPct / 100));
+            const replayRev = replaySalesUnits * offerPrice;
+
+            // Totals
+            const totalSalesUnits = liveSalesUnits + replaySalesUnits;
+            const totalRev = liveRev + replayRev;
+            const revenuePerRegistrant = registrants > 0 ? (totalRev / registrants) : 0;
+            const blendedYieldPct = registrants > 0 ? ((totalSalesUnits / registrants) * 100) : 0;
+
+            // Update DOM KPIs
+            statLiveAttendees.textContent = liveAttendees.toLocaleString();
+            statTotalSales.textContent = `${totalSalesUnits.toLocaleString()} Sales`;
+            statTotalRev.textContent = `$${totalRev.toLocaleString()}`;
+            statRpr.textContent = `$${revenuePerRegistrant.toFixed(2)} / reg`;
+
+            statLiveRev.textContent = `$${liveRev.toLocaleString()}`;
+            statReplayRev.textContent = `$${replayRev.toLocaleString()}`;
+            statEffectiveShowup.textContent = `${effectiveShowupPct.toFixed(1)}%`;
+            statBlendedYield.textContent = `${blendedYieldPct.toFixed(2)}%`;
+
+            // Build Strategy Card Text
+            buildTakeawayCard(registrants, liveAttendees, totalRev, revenuePerRegistrant, offerPrice, blendedYieldPct);
+
+            // Render Chart
+            renderChart(registrants, liveAttendees, replayViewers, totalSalesUnits);
+        };
+
+        const buildTakeawayCard = (regs, live, rev, rpr, price, yieldPct) => {
+            let title = "🎯 Event Monetization Health Check";
+            let body = `With <strong>${regs.toLocaleString()} registrants</strong>, your simulated event yields <strong>${live.toLocaleString()} live attendees</strong>. Generating <strong>$${rev.toLocaleString()}</strong> at <strong>$${rpr.toFixed(2)} revenue per registrant (RPR)</strong>. Every $1.00 spent acquiring a registrant for under $${rpr.toFixed(2)} represents direct positive ROI.`;
+
+            if (rpr > 15) {
+                title = "🚀 High-Yield Masterclass Pipeline";
+                body += ` Your $${price} offer paired with a ${yieldPct.toFixed(1)}% total funnel yield creates elite customer acquisition economics!`;
+            } else if (rpr < 5) {
+                title = "⚠️ Low Registrant Yield Warning";
+                body += ` Your RPR ($${rpr.toFixed(2)}) is thin. Consider increasing your offer price, boosting show-up rate via SMS reminders, or adding a high-urgency replay deadline.`;
+            }
+
+            takeawayCard.innerHTML = `
+                <span class="font-bold text-xs">${title}</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400">${body}</span>
+            `;
+        };
+
+        const renderChart = (registrants, liveAttendees, replayViewers, totalBuyers) => {
+            const ctx = document.getElementById("webinar-chart").getContext("2d");
+            const isDark = document.documentElement.classList.contains("dark");
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Registrants', 'Live Attendees', 'Replay Viewers', 'Total Buyers'],
+                    datasets: [{
+                        label: 'People Count',
+                        data: [registrants, liveAttendees, replayViewers, totalBuyers],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.4)', // Indigo
+                            'rgba(168, 85, 247, 0.7)', // Purple
+                            'rgba(245, 158, 11, 0.7)', // Amber
+                            'rgba(16, 185, 129, 0.9)'  // Emerald
+                        ],
+                        borderColor: [
+                            '#6366f1',
+                            '#a855f7',
+                            '#f59e0b',
+                            '#10b981'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => ` Count: ${context.parsed.y.toLocaleString()} people`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: isDark ? '#9ca3af' : '#4b5563', font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+                            ticks: { 
+                                color: isDark ? '#9ca3af' : '#4b5563', 
+                                font: { size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        const inputs = [
+            selectPreset, sliderRegistrants, sliderShowup, selectReminders, 
+            sliderOfferPrice, sliderLiveConv, inputReplayViewPct, inputReplayConvPct
+        ];
+        inputs.forEach(el => el.addEventListener("input", calculateSimulator));
+
+        btnReset.addEventListener("click", () => {
+            selectPreset.value = "masterclass";
+            sliderRegistrants.value = 500;
+            sliderShowup.value = 35.0;
+            selectReminders.value = "5";
+            sliderOfferPrice.value = 497;
+            sliderLiveConv.value = 5.0;
+            inputReplayViewPct.value = 25;
+            inputReplayConvPct.value = 1.5;
+            calculateSimulator();
+            triggerToast("Simulator reset to benchmark defaults.", "🔄");
+        });
+
+        btnCopy.addEventListener("click", () => {
+            const registrants = parseInt(sliderRegistrants.value).toLocaleString();
+            const showup = statEffectiveShowup.textContent;
+            const price = sliderOfferPrice.value;
+            const liveConv = sliderLiveConv.value;
+
+            const liveAttendees = statLiveAttendees.textContent;
+            const totalSales = statTotalSales.textContent;
+            const totalRev = statTotalRev.textContent;
+            const rpr = statRpr.textContent;
+
+            const liveRev = statLiveRev.textContent;
+            const replayRev = statReplayRev.textContent;
+            const yieldPct = statBlendedYield.textContent;
+
+            const markdown = `### 📡 Webinar & Live Event Conversion Simulation
+*   **Total Registrants:** ${registrants}
+*   **Effective Show-Up Rate:** ${showup} (~${liveAttendees} Live Attendees)
+*   **Pitch Offer:** $${price} (${liveConv}% Live Conversion Rate)
+
+#### 📊 Attendance & Revenue Breakdown:
+*   **Live Event Revenue:** ${liveRev}
+*   **Replay Sequence Revenue:** ${replayRev}
+*   **Gross Event Revenue:** **${totalRev}** (${totalSales})
+*   **Revenue Per Registrant (RPR):** **${rpr}**
+*   **Total Funnel Conversion Yield:** ${yieldPct}
+
+*Generated via Thrive Productions Live Event Conversion Simulator*`;
+
+            try {
+                const textarea = document.createElement("textarea");
+                textarea.value = markdown;
+                textarea.style.position = "fixed";
+                textarea.style.opacity = "0";
+                document.body.appendChild(textarea);
+                textarea.select();
+                const success = document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                if (success) {
+                    triggerToast("Simulation Report Copied to Clipboard!");
+                } else {
+                    throw new Error("Copy execution failed");
+                }
+            } catch (err) {
+                console.error("Clipboard write error: ", err);
+                triggerToast("Copy failed. Please copy manually.", "⚠️");
+            }
+        });
+
+        window.addEventListener("DOMContentLoaded", calculateSimulator);
+    </script>
+</body>
+</html>
